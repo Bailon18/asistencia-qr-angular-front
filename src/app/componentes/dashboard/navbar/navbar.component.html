@@ -1,0 +1,115 @@
+
+
+<div class="wrapper">
+
+
+    <nav id="sidebar" class="sidebar js-sidebar">
+        <div class="sidebar-content js-simplebar">
+            <a class="sidebar-brand" href="#">
+                <span class="align-middle">ASISTENCIA QR</span>
+            </a>
+    
+            <ul class="sidebar-nav">
+                <li class="sidebar-header">
+                    Menu
+                </li>
+    
+                <li class="sidebar-item active">
+                    <a class="sidebar-link" href="index.html">
+                        <i class="align-middle" data-feather="sliders"></i>
+                        <span class="align-middle">Empleados</span>
+                    </a>
+                </li>
+    
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="pages-profile.html">
+                        <i class="align-middle" data-feather="user"></i>
+                        <span class="align-middle">Asistencias</span>
+                    </a>
+                </li>
+
+
+            </ul>
+
+        </div>
+    </nav>
+    
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+			
+			<button id="sidebarCollapse" class="btn btn-hamburger" onclick="toggleSidebar()">
+				<i class="hamburger-icon fas fa-bars"></i>
+			</button>
+			
+            
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav navbar-align">
+            
+                    <li class="nav-item dropdown">
+                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
+                            <i class="align-middle" data-feather="settings"></i>
+                            </a>
+                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+                            <span class="text-dark">Bailon Paucar</span>
+                            </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="pages-profile.html"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="index.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
+                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Log out</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="content">
+            <div class="container-fluid p-0">
+
+                <h1 class="h3 mb-3"><strong>Empleados</strong></h1>
+
+                <div class="row">
+    
+                    <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Listado de empleados</h5>
+                            </div>
+                            <div class="card-body h-100">
+                                <router-outlet></router-outlet>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row text-muted">
+                    <div class="col-6 text-start">
+                        <p class="mb-0">
+                            <a class="text-muted" href="https://adminkit.io/" target="_blank"><strong>Asistencia QR</strong></a> - <a class="text-muted" href="https://adminkit.io/" target="_blank"><strong></strong></a>								&copy;
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebarCollapse = document.getElementById('sidebarCollapse');
+        const sidebar = document.getElementById('sidebar');
+
+        sidebarCollapse.addEventListener('click', function (e) {
+            e.preventDefault();
+            sidebar.classList.toggle('sidebar-hidden');
+        });
+    });
+</script>

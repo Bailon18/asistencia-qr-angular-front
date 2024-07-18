@@ -1,0 +1,13 @@
+.sidebar-hidden {
+    display: none; 
+}
+.btn-hamburger {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.hamburger-icon {
+    color: #212529; 
+}
