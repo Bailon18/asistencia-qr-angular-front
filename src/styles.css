@@ -1,2 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'assets/css/app.css';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden; 
+  }
+  
+  body { margin: 0; font-family: Roboto, "Roboto", sans-serif; }
+  
+  .mat-header-cell {
+      color:black;
+      font-size:14px;
+      font-family: "Roboto",;
+      font-weight: bold!important;
+    }
+  
+  .mat-cell {
+  font-family: "Roboto",;
+  }
+  
+  .mat-header-cell {
+      text-align: center !important;
+  }
+  
+  .mat-cell {
+      text-align: center !important;
+  }
+  
+  .mat-tooltip.tooltip {
+      font-size: 12px;
+    }
+  
+    .mat-header-cell {
+      color: black; 
+      font-weight: bold; 
+      font-size: 15px;
+    }
+    
+    th.mat-header-cell {
+      color: white;
+      background-color:#2f4053;
+    }
+    
+    .mat-row:hover {
+      background-color: rgb(240, 239, 239);
+    }
+  
+  
+    .mat-error{
+      font-size: 13px;
+    }

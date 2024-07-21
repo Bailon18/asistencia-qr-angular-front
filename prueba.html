@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Empleado</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .photo-upload {
+            position: relative;
+            width: 203px; /* Ancho ajustado para tamaño de foto de carnet */
+            height: 220px; /* Alto ajustado para tamaño de foto de carnet */
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .photo-upload img {
+            width: 100%; /* Ajustar ancho de imagen */
+            height: 100%; /* Ajustar alto de imagen */
+            object-fit: fill; /* Asegura que la imagen cubra el contenedor */
+            display: none; /* Ocultar imagen por defecto */
+        }
+        .photo-upload input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .photo-upload .upload-icon {
+            position: absolute;
+            top: 10px; /* Ajusta la posición desde la parte superior */
+            right: 10px; /* Ajusta la posición desde el borde izquierdo */
+            font-size: 2rem; /* Ajustar tamaño del icono si es necesario */
+            color: #007bff;
+            pointer-events: none; /* Permite hacer clic en el área sin que el icono bloquee la acción */
+        }
+        .card-custom {
+            max-width: 700px; /* Ancho máximo del card */
+            margin: 0 auto; /* Centrar el card */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card card-custom">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <!-- Columna 1: Foto y campos adicionales -->
+                        <div class="col-md-6">
+                            <!-- Fila 1: Foto -->
+                            <div class="form-group">
+                                <label for="foto" class="d-block">Foto</label>
+                                <div class="photo-upload">
+                                    <input type="file" id="foto" name="foto" accept="image/*">
+                                    <i class="upload-icon fas fa-camera"></i> <!-- Icono de cámara, usa FontAwesome -->
+                                    <img id="previewFoto" src="" alt="Foto del Empleado">
+                                </div>
+                            </div>
+                            <!-- Fila 2: Nombres -->
+                            <div class="form-group mt-4">
+                                <label for="nombres">Nombres</label>
+                                <input type="text" class="form-control" id="nombres" name="nombres" required>
+                            </div>
+                            <!-- Fila 3: Apellidos -->
+                            <div class="form-group">
+                                <label for="apellidos">Apellidos</label>
+                                <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+                            </div>
+                            <!-- Fila 4: INE -->
+                            <div class="form-group">
+                                <label for="ine">INE</label>
+                                <input type="text" class="form-control" id="ine" name="ine" required>
+                            </div>
+                        </div>
+
+                        <!-- Columna 2: Input Adicional -->
+                        <div class="col-md-6">
+                            <!-- Fila 5: Correo -->
+                            <div class="form-group">
+                                <label for="correo">Correo</label>
+                                <input type="email" class="form-control" id="correo" name="correo" required>
+                            </div>
+                            <!-- Fila 6: Dirección -->
+                            <div class="form-group">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            </div>
+                            <!-- Fila 7: Teléfono -->
+                            <div class="form-group">
+                                <label for="telefono">Teléfono</label>
+                                <input type="text" class="form-control" id="telefono" name="telefono" required>
+                            </div>
+                            <!-- Fila 8: Turno -->
+                            <div class="form-group">
+                                <label for="turno">Turno</label>
+                                <select class="form-control" id="turno" name="turno">
+                                    <option value="1">Turno 1</option>
+                                    <option value="2">Turno 2</option>
+                                    <!-- Agregar más opciones según sea necesario -->
+                                </select>
+                            </div>
+                            <!-- Fila 9: Fecha de Nacimiento -->
+                            <div class="form-group">
+                                <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                                <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" required>
+                            </div>
+                            <!-- Fila 10: Tipo de Empleado -->
+                            <div class="form-group">
+                                <label for="tipoEmpleado">Tipo de Empleado</label>
+                                <select class="form-control" id="tipoEmpleado" name="tipoEmpleado" required>
+                                    <option value="administrador">Administrador</option>
+                                    <option value="empleado">Empleado</option>
+                                    <!-- Agrega más opciones según sea necesario -->
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-4">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- FontAwesome for the icon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <!-- Script para mostrar la imagen seleccionada -->
+    <script>
+        document.getElementById('foto').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('previewFoto');
+                    img.src = e.target.result;
+                    img.style.display = 'block'; // Mostrar la imagen seleccionada
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

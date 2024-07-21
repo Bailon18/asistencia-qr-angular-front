@@ -1,1 +1,107 @@
-<p>empleados works!</p>
+
+<div class="container-fluid p-0">
+    <h2><strong>Empleados</strong></h2>
+    <div class="row">
+        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+       
+            <mat-card>
+                <div class="row">
+                    <div class="row">
+                        <div class="col-6 mb-2">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <mat-card-content>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <mat-form-field style="width: 100%;" appearance="fill">
+                                                    <mat-label>Filtro</mat-label>
+                                                    <input matInput (keyup)="aplicarFiltro($event)"  style="width: 400px" placeholder="Filtrar  nombre - apellido - cedula" #input>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-4 mt-2">
+                                                <button class="btn btn-secondary" (click)="generar_qr_todos()" style="width: 182px; height: 32px;">Generar QR para Todos</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-end mt-2">
+                                        <button class="btn btn-primary" (click)="nuevo_empleado()">Nuevo Empleado</button>
+                                    </div>
+                                </div>
+                                <div class="mat-elevation-z8" style="max-height: 400px; overflow-y: auto;">
+
+                                    <table mat-table [dataSource]="dataSource">
+                                        <ng-container matColumnDef="ID">
+                                        <th mat-header-cell *matHeaderCellDef id="colum"> ID</th>
+                                        <td mat-cell *matCellDef="let fila"> {{fila.id}} </td>
+                                        </ng-container>
+                                    
+                                        <ng-container matColumnDef="NOMBRES">
+                                        <th mat-header-cell *matHeaderCellDef id="colum"> Nombre </th>
+                                        <td mat-cell *matCellDef="let fila"> {{ fila.nombres }}</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="APELLIDOS">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> Apellidos </th>
+                                            <td mat-cell *matCellDef="let fila"> {{ fila.apellidos }} </td>
+                                        </ng-container>
+                
+            
+                                        <ng-container matColumnDef="INE">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> INE </th>
+                                            <td mat-cell *matCellDef="let fila"> {{ fila.ine }} </td>
+                                        </ng-container>
+                                    
+            
+                                        <ng-container matColumnDef="CORREO">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> Correo </th>
+                                            <td mat-cell *matCellDef="let fila"> {{fila.correo}} </td>
+                                        </ng-container>
+
+                                                  
+                                        <ng-container matColumnDef="TELEFONO">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> Teléfono </th>
+                                            <td mat-cell *matCellDef="let fila"> {{fila.telefono}} </td>
+                                        </ng-container>
+                                        
+  
+                                        <ng-container matColumnDef="TURNO">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> Turno </th>
+                                            <td mat-cell *matCellDef="let fila"> {{fila.turno.nombre}} </td>
+                                        </ng-container>
+                        
+                                        <ng-container matColumnDef="ACCIONES">
+                                            <th mat-header-cell *matHeaderCellDef id="colum"> Acciones </th>
+                                            <td mat-cell *matCellDef="let fila">
+                                                <a class="pointer iconosAccion" matTooltip="Editar Empleado" (click)="editar_empleado(fila)">
+                                                    <mat-icon class="success-icon">edit</mat-icon>
+                                                </a>
+                                                <a class="pointer iconosAccion" matTooltip="Eliminar Empleado" (click)="eliminar_empleado(fila)">
+                                                    <mat-icon class="danger-icon">delete</mat-icon>
+                                                </a>
+                                                <a class="pointer iconosAccion" matTooltip="Generar QR" (click)="generar_qr(fila)">
+                                                    <mat-icon class="info-icon">qr_code</mat-icon> <!-- Ícono para generar QR -->
+                                                </a>
+                                            </td>
+                                        </ng-container>
+                                        
+                                    
+                                        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                                    </table>
+                                    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                                        (page)="listarEmpleados($event.pageIndex, $event.pageSize)">
+                                    </mat-paginator>
+                                </div>
+                            </mat-card-content>
+                        </div>
+                    </div>
+                </div>
+            </mat-card>
+            
+        </div>
+    </div>
+</div>

@@ -11,10 +11,12 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^16.2.0",
+    "@angular/cdk": "^16.2.0",
     "@angular/common": "^16.2.0",
     "@angular/compiler": "^16.2.0",
     "@angular/core": "^16.2.0",
     "@angular/forms": "^16.2.0",
+    "@angular/material": "^16.2.0",
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
@@ -26,6 +28,7 @@
     "jsvectormap": "^1.5.3",
     "rxjs": "~7.8.0",
     "simplebar": "^5.3.9",
+    "sweetalert2": "^11.12.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
   },

@@ -21,7 +21,7 @@ const routes: Routes = [
       },
 
       {
-        path: 'asistencia',
+        path: 'asistencias',
         component: AsistenciasComponent,
       }
     ],

@@ -6,6 +6,9 @@ import { AsistenciasComponent } from './asistencias/asistencias.component';
 import { RouterModule } from '@angular/router';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
+import { MaterialModule } from 'src/app/material/material.module';
+import { ModalCrearActualizarComponent } from './empleados/modals/modal-crear-actualizar/modal-crear-actualizar.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -14,12 +17,16 @@ import { DashboardComponent } from './dashboard.component';
     DashboardComponent,
     NavbarComponent,
     EmpleadosComponent,
-    AsistenciasComponent
+    AsistenciasComponent,
+    ModalCrearActualizarComponent
   ],
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    RouterModule
+    MaterialModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class DashboardModule { }

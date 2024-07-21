@@ -14,15 +14,15 @@
                     Menu
                 </li>
     
-                <li class="sidebar-item active">
-                    <a class="sidebar-link" href="index.html">
+                <li class="sidebar-item" routerLinkActive="active">
+                    <a class="sidebar-link"  routerLink="/dashboard/empleados">
                         <i class="align-middle" data-feather="sliders"></i>
                         <span class="align-middle">Empleados</span>
                     </a>
                 </li>
     
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="pages-profile.html">
+                <li class="sidebar-item" routerLinkActive="active">
+                    <a class="sidebar-link" routerLink="/dashboard/asistencias">
                         <i class="align-middle" data-feather="user"></i>
                         <span class="align-middle">Asistencias</span>
                     </a>
@@ -68,25 +68,7 @@
         </nav>
 
         <main class="content">
-            <div class="container-fluid p-0">
-
-                <h1 class="h3 mb-3"><strong>Empleados</strong></h1>
-
-                <div class="row">
-    
-                    <div class="col-12 col-md-12 col-lg-12 col-xl-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Listado de empleados</h5>
-                            </div>
-                            <div class="card-body h-100">
-                                <router-outlet></router-outlet>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <router-outlet></router-outlet>
         </main>
 
         <footer class="footer">
