@@ -5,6 +5,9 @@ import { Empleado } from '../../model/empleados';
 import { EmpleadosService } from '../../services/empleado.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import swall from 'sweetalert2';
+import { Cargos } from '../../model/cargo.enum';
+
+
 
 
 @Component({
@@ -62,6 +65,7 @@ export class ModalCrearActualizarComponent implements OnInit {
       fechaNacimiento: [today, [Validators.required, this.validarEdad(18)]],
       tipoEmpleado: ['Empleado', Validators.required],
       foto:  ['', Validators.required],
+      cargo: ['Contabilidad', Validators.required],
       fotourl: [''],
     });
 
@@ -82,6 +86,7 @@ export class ModalCrearActualizarComponent implements OnInit {
             turno: resp.turno.id,
             fechaNacimiento: new Date(resp.fechaNacimiento),
             tipoEmpleado: resp.tipoEmpleado,
+            cargo: resp.cargo
           });
 
           this.fotoEditado = 'data:image/png;base64,' + resp.foto;
@@ -129,6 +134,7 @@ export class ModalCrearActualizarComponent implements OnInit {
           fechaNacimiento: this.empleadoForm.value.fechaNacimiento,
           tipoEmpleado: this.empleadoForm.value.tipoEmpleado ,
           fechaRegistro: new Date(),
+          cargo: this.empleadoForm.value.cargo,
           foto: null
         }
 

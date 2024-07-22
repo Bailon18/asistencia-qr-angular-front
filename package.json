@@ -25,11 +25,14 @@
     "chart.js": "^2.9.4",
     "feather-icons": "^4.29.0",
     "flatpickr": "^4.6.13",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "jsvectormap": "^1.5.3",
     "rxjs": "~7.8.0",
     "simplebar": "^5.3.9",
-    "sweetalert2": "^11.12.2",
+    "sweetalert2": "^11.12.3",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

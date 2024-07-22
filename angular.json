@@ -29,7 +29,8 @@
               "src/styles.css",
               "src/assets/css/app.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["sweetalert2"]
           },
           "configurations": {
             "production": {

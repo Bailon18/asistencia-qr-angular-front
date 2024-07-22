@@ -41,14 +41,20 @@
                     </mat-error>
                 </mat-form-field>
 
-                <!-- Fila 5: Correo -->
+
                 <mat-form-field appearance="fill" class="mb-1">
-                    <mat-label>Correo</mat-label>
-                    <input type="email" matInput formControlName="correo" (keyup)="validarcorreo($event)">
-                    <mat-error *ngIf="isValidField('correo')">
-                        {{ getFieldError('correo') }}
+                    <mat-label>Cargo</mat-label>
+                    <mat-select formControlName="cargo" name="cargo">
+                        <mat-option value='Contabilidad'>Contabilidad</mat-option>
+                        <mat-option value='Sistemas'>Sistemas</mat-option>
+                        <mat-option value='Cajero'>Cajero</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="isValidField('cargo')">
+                        {{ getFieldError('cargo') }}
                     </mat-error>
                 </mat-form-field>
+
+
             </div>
 
             <!-- Columna 2: Input Adicional -->
@@ -119,9 +125,20 @@
 
             </div>
 
+            <!-- Fila 5: Correo -->
+            <mat-form-field appearance="fill" class="mb-1">
+                <mat-label>Correo</mat-label>
+                <input type="email" matInput formControlName="correo" (keyup)="validarcorreo($event)">
+                <mat-error *ngIf="isValidField('correo')">
+                    {{ getFieldError('correo') }}
+                </mat-error>
+            </mat-form-field>
+
+            <!-- mat-raised-button color="primary"  -->
+
             <div class="col text-end">
-                <button class="btn btn-secondary m-2" mat-dialog-close>Cancelar</button>
-                <button class="btn btn-primary" type="submit" (click)="guardarEmpleado()"
+                <button mat-raised-button style="background-color: gray; color: white;" class="m-2" mat-dialog-close>Cancelar</button>
+                <button mat-raised-button color="primary" type="submit" (click)="guardarEmpleado()"
                     [disabled]="empleadoForm.invalid">{{botonTexto}}</button>
             </div>
         </div>

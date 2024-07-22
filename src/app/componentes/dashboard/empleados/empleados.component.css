@@ -26,3 +26,26 @@ table {
     background-color:#2f4053;
     font-family: 'Roboto';
 }
+
+
+.mat-no-data-row {
+  background-color: #f8d7da; 
+  color: #721c24; 
+}
+
+
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+.no-data-message mat-icon {
+  margin-right: 8px;
+  font-size: 20px;
+  color: #721c24; 
+}

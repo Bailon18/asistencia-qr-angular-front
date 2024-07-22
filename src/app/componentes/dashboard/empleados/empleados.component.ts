@@ -8,6 +8,10 @@ import { EmpleadosService } from './services/empleado.service';
 import swall from 'sweetalert2';
 import { ModalCrearActualizarComponent } from './modals/modal-crear-actualizar/modal-crear-actualizar.component';
 
+import jsPDF from 'jspdf';
+import autoTable, { Styles } from 'jspdf-autotable'; 
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-empleados',
   templateUrl: './empleados.component.html',
@@ -21,9 +25,10 @@ export class EmpleadosComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  columnas: string[] = ['ID', 'NOMBRES', 'APELLIDOS',  'INE', 'CORREO', 'TELEFONO', 'TURNO','ACCIONES'];
+  columnas: string[] = ['ID', 'EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO','TURNO','ACCIONES'];
   dataSource = new MatTableDataSource<Empleado>;
   dataSourceCopy: Empleado[] = []; 
+
 
 
   constructor(
@@ -42,27 +47,105 @@ export class EmpleadosComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  aplicarFiltro(event: Event) {
+  // aplicarFiltro(event: Event) {
 
-    const filterValue = (event.target as HTMLInputElement).value.trim();
+  //   const filterValue = (event.target as HTMLInputElement).value.trim();
   
+  //   if (filterValue === '') {
+  //     this.listarEmpleados(0, 4);
+  //   } else {
+
+  //     this.empleadoServices.filtrarEmpleados(filterValue, 0, 4).subscribe({
+  //       next: res => {
+  //         if (res && res.content && res.content.length > 0) {
+  //           this.dataSource.data = res.content;
+  //         } else {
+  //           this.dataSource.data = [];
+  //           swall.fire({
+  //             icon: 'info',
+  //             title: 'Sin resultados',
+  //             text: 'No se encontraron empleado con ese filtro'
+  //           });
+  //         }
+  
+  //         if (this.dataSource.paginator) {
+  //           this.dataSource.paginator.firstPage();
+  //         }
+  //       },
+  //       error: err => {
+  //         this.dataSource.data = [];
+  //         swall.fire({
+  //           icon: 'error',
+  //           title: 'Error',
+  //           text: 'Ocurrió un error al aplicar el filtro'
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
+
+  generarExcel() {
+    
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
+      ['ID', 'EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO', 'TURNO', 'FECHA DE REGISTRO']
+    ]);
+
+    // Añadir datos de los clientes
+    this.dataSourceCopy.forEach((empleado, index) => {
+      const rowData = [
+        `${empleado.nombres} ${empleado.apellidos}`,
+        empleado.ine,
+        empleado.correo,
+        empleado.telefono,
+        empleado.cargo,
+        empleado.turno,
+        empleado.fechaRegistro
+      ];
+      XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
+    });
+
+  // Verificar si hay datos en la hoja de cálculo
+  if (ws['!ref']) {
+    // Ajustar la anchura de las columnas según el contenido
+    const columnWidths = [];
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      let max = 0;
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+        if (cell && cell.t === 's') {
+          max = Math.max(max, cell.v.toString().length);
+        }
+      }
+      columnWidths.push({ wch: Math.min(max + 2, 80) }); 
+    }
+    ws['!cols'] = columnWidths;
+  }
+
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Empleados');
+
+    XLSX.writeFile(wb, 'empleados.xlsx');
+  
+  }
+  
+
+
+  aplicarFiltro(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+
     if (filterValue === '') {
       this.listarEmpleados(0, 4);
     } else {
-
       this.empleadoServices.filtrarEmpleados(filterValue, 0, 4).subscribe({
         next: res => {
           if (res && res.content && res.content.length > 0) {
             this.dataSource.data = res.content;
           } else {
             this.dataSource.data = [];
-            swall.fire({
-              icon: 'info',
-              title: 'Sin resultados',
-              text: 'No se encontraron empleado con ese filtro'
-            });
           }
-  
+
           if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage();
           }
