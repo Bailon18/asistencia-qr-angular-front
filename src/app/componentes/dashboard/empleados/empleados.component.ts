@@ -9,8 +9,9 @@ import swall from 'sweetalert2';
 import { ModalCrearActualizarComponent } from './modals/modal-crear-actualizar/modal-crear-actualizar.component';
 
 import jsPDF from 'jspdf';
-import autoTable, { Styles } from 'jspdf-autotable'; 
+import autoTable, { Styles } from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { TipoEmpleado } from './model/tipo_empleado.enum';
 
 @Component({
   selector: 'app-empleados',
@@ -19,15 +20,17 @@ import * as XLSX from 'xlsx';
 })
 export class EmpleadosComponent implements OnInit {
 
-  totalItems: number = 0; 
-  pageSize: number = 4; 
-  pageIndex: number = 0; 
+  totalItems: number = 0;
+  pageSize: number = 4;
+  pageIndex: number = 0;
+  totalpages: number = 0;
+  totalElements: number = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  columnas: string[] = ['ID', 'EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO','TURNO','ACCIONES'];
+  columnas: string[] = ['ID', 'EMPLEADO', 'INE', 'TELEFONO', 'CARGO','TURNO','ACCIONES'];
   dataSource = new MatTableDataSource<Empleado>;
-  dataSourceCopy: Empleado[] = []; 
+  dataSourceCopy: Empleado[] = [];
 
 
 
@@ -47,89 +50,173 @@ export class EmpleadosComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  // aplicarFiltro(event: Event) {
-
-  //   const filterValue = (event.target as HTMLInputElement).value.trim();
-  
-  //   if (filterValue === '') {
-  //     this.listarEmpleados(0, 4);
-  //   } else {
-
-  //     this.empleadoServices.filtrarEmpleados(filterValue, 0, 4).subscribe({
-  //       next: res => {
-  //         if (res && res.content && res.content.length > 0) {
-  //           this.dataSource.data = res.content;
-  //         } else {
-  //           this.dataSource.data = [];
-  //           swall.fire({
-  //             icon: 'info',
-  //             title: 'Sin resultados',
-  //             text: 'No se encontraron empleado con ese filtro'
-  //           });
-  //         }
-  
-  //         if (this.dataSource.paginator) {
-  //           this.dataSource.paginator.firstPage();
-  //         }
-  //       },
-  //       error: err => {
-  //         this.dataSource.data = [];
-  //         swall.fire({
-  //           icon: 'error',
-  //           title: 'Error',
-  //           text: 'Ocurrió un error al aplicar el filtro'
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 
   generarExcel() {
-    
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([
-      ['ID', 'EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO', 'TURNO', 'FECHA DE REGISTRO']
-    ]);
+    const allData: Empleado[] = [];
 
-    // Añadir datos de los clientes
-    this.dataSourceCopy.forEach((empleado, index) => {
-      const rowData = [
-        `${empleado.nombres} ${empleado.apellidos}`,
-        empleado.ine,
-        empleado.correo,
-        empleado.telefono,
-        empleado.cargo,
-        empleado.turno,
-        empleado.fechaRegistro
-      ];
-      XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
-    });
-
-  // Verificar si hay datos en la hoja de cálculo
-  if (ws['!ref']) {
-    // Ajustar la anchura de las columnas según el contenido
-    const columnWidths = [];
-    const range = XLSX.utils.decode_range(ws['!ref']);
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      let max = 0;
-      for (let R = range.s.r; R <= range.e.r; ++R) {
-        const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
-        if (cell && cell.t === 's') {
-          max = Math.max(max, cell.v.toString().length);
-        }
-      }
-      columnWidths.push({ wch: Math.min(max + 2, 80) }); 
+    const requests = [];
+    for (let page = 0; page < this.totalpages; page++) {
+      requests.push(this.empleadoServices.getEmpleados(page, this.pageSize).toPromise());
     }
-    ws['!cols'] = columnWidths;
+
+    Promise.all(requests).then((responses: any[]) => {
+      responses.forEach(response => {
+        allData.push(...response.content);
+      });
+
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([]);
+
+      // Añadir una fila vacía encima del título para espaciarlo
+      XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A1' });
+
+      // Añadir el título y aplicar el estilo de alineación centrada
+      XLSX.utils.sheet_add_aoa(ws, [['Listado de empleados']], { origin: 'A2' });
+
+      // Estilo de alineación centrada
+      const centerAlignment = {
+        alignment: { horizontal: 'center' }
+      };
+
+      // Aplicar el estilo al título
+      ws['A2'].s = centerAlignment;
+
+      // Añadir una fila vacía debajo del título para espaciarlo
+      XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A3' });
+
+      // Fusionar las celdas para centrar el título
+      const titleRange = { s: { r: 1, c: 0 }, e: { r: 1, c: 6 } }; // Suponiendo 7 columnas
+      if (!ws['!merges']) {
+        ws['!merges'] = [];
+      }
+      ws['!merges'].push(titleRange);
+
+      // Añadir los encabezados de las columnas, empezando desde la fila 4
+      XLSX.utils.sheet_add_aoa(ws, [
+        ['EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO', 'TURNO', 'FECHA DE REGISTRO']
+      ], { origin: 'A4' });
+
+      allData.forEach((empleado) => {
+        const rowData = [
+          `${empleado.nombres} ${empleado.apellidos}`,
+          empleado.ine,
+          empleado.correo,
+          empleado.telefono,
+          empleado.cargo,
+          empleado.turno.nombre,
+          empleado.fechaRegistro
+        ];
+        XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
+      });
+
+      // Verificar si hay datos en la hoja de cálculo
+      if (ws['!ref']) {
+        // Ajustar la anchura de las columnas según el contenido
+        const columnWidths = [];
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          let max = 0;
+          for (let R = range.s.r; R <= range.e.r; ++R) {
+            const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+            if (cell && cell.t === 's') {
+              max = Math.max(max, cell.v.toString().length);
+            }
+          }
+          columnWidths.push({ wch: Math.min(max + 2, 80) });
+        }
+        ws['!cols'] = columnWidths;
+      }
+
+      XLSX.utils.book_append_sheet(wb, ws, 'Empleados');
+      XLSX.writeFile(wb, 'empleados.xlsx');
+    }).catch(error => {
+      console.error('Error fetching pages:', error);
+      swall.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al obtener los datos para la exportación'
+      });
+    });
   }
 
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Empleados');
 
-    XLSX.writeFile(wb, 'empleados.xlsx');
-  
+
+  generarPdf() {
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const margin = 10;
+    const titleFontSize = 18;
+
+    // Agregar el título
+    const title = 'Listado de Empleados';
+    doc.setFontSize(titleFontSize);
+    doc.text(title, doc.internal.pageSize.width / 2, margin + titleFontSize, { align: 'center' });
+
+    // Agregar un espacio debajo del título
+    doc.setFontSize(12);
+    doc.text('', doc.internal.pageSize.width / 2, margin + titleFontSize + 10);
+
+    // Obtener todos los datos
+    const allData: Empleado[] = [];
+    const requests = [];
+
+    for (let page = 0; page < this.totalpages; page++) {
+      requests.push(this.empleadoServices.getEmpleados(page, this.pageSize).toPromise());
+    }
+
+    Promise.all(requests).then((responses: any[]) => {
+      responses.forEach(response => {
+        allData.push(...response.content);
+      });
+
+      // Configurar las columnas y los datos
+      const columns = [
+        { header: 'EMPLEADO', dataKey: 'empleado' },
+        { header: 'INE', dataKey: 'ine' },
+        { header: 'CORREO', dataKey: 'correo' },
+        { header: 'TELEFONO', dataKey: 'telefono' },
+        { header: 'CARGO', dataKey: 'cargo' },
+        { header: 'TURNO', dataKey: 'turno' },
+        { header: 'TIPO EMPLEADO', dataKey: 'TipoEmpleado' }
+      ];
+
+      const data = allData.map(empleado => ({
+        empleado: `${empleado.nombres} ${empleado.apellidos}`,
+        ine: empleado.ine,
+        correo: empleado.correo || '',  // Convertir undefined a string vacío
+        telefono: empleado.telefono || '',  // Convertir undefined a string vacío
+        cargo: (empleado.cargo as unknown as string) || '',  // Convertir enums a string
+        turno: empleado.turno?.nombre || '',  // Convertir undefined a string vacío
+        TipoEmpleado: empleado.tipoEmpleado // Convertir Date a string de fecha
+      }));
+
+      autoTable(doc, {
+        columns: columns,
+        body: data,
+        startY: margin + titleFontSize + 20, // Ajustar el valor 20 según sea necesario
+        margin: { horizontal: margin },
+        styles: {
+          cellPadding: 2,
+          fontSize: 10,
+          valign: 'middle',
+          overflow: 'linebreak'
+        }
+      });
+
+      // Guardar el archivo PDF
+      doc.save('empleados.pdf');
+    }).catch(error => {
+      console.error('Error fetching pages:', error);
+      swall.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al obtener los datos para la exportación'
+      });
+    });
   }
-  
+
+
+
 
 
   aplicarFiltro(event: Event) {
@@ -164,9 +251,9 @@ export class EmpleadosComponent implements OnInit {
 
   listarEmpleados(pageIndex: number, pageSize: number) {
     const page = pageIndex + 0;
-  
+
     let timerInterval: any;
-  
+
     swall.fire({
       title: "Cargando...",
       html: "Por favor espere mientras se cargan los datos.",
@@ -178,9 +265,17 @@ export class EmpleadosComponent implements OnInit {
         clearInterval(timerInterval);
       }
     });
-  
+
     this.empleadoServices.getEmpleados(page, pageSize).subscribe({
+
+
       next: res => {
+
+
+        this.totalpages = res.totalPages
+        this.totalElements = res.totalElements
+        console.log('totalpages ', this.totalpages)
+        console.log('totalElements ', this.totalElements)
         if (res && res.content && res.content.length > 0) {
           this.dataSource = new MatTableDataSource<Empleado>(res.content);
           this.totalItems = res.totalElements;
@@ -194,7 +289,7 @@ export class EmpleadosComponent implements OnInit {
           this.pageIndex = pageIndex;
           this.dataSourceCopy = [];
         }
-  
+
         swall.close();
       },
       error: error => {
@@ -261,7 +356,7 @@ export class EmpleadosComponent implements OnInit {
       }
     });
   }
-  
+
 
   generar_qr(fila: any) {
     if (fila) {
@@ -274,7 +369,7 @@ export class EmpleadosComponent implements OnInit {
           swall.showLoading();
         }
       });
-  
+
       this.empleadoServices.generarQrEmpleado(fila.id).subscribe({
         next: (res) => {
           if (res === true) {
@@ -305,9 +400,9 @@ export class EmpleadosComponent implements OnInit {
       });
     }
   }
-  
+
 
   generar_qr_todos(): void {
-  
+
   }
 }

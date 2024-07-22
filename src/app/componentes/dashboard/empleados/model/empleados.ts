@@ -13,7 +13,7 @@ export interface Empleado {
     telefono: string;
     turno: Turno;
     fechaNacimiento: Date;
-    fechaRegistro ?: Date; 
+    fechaRegistro ?: Date;
     tipoEmpleado: TipoEmpleado;
     cargo: Cargos;
     //estado: boolean;

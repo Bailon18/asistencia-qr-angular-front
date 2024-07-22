@@ -8,19 +8,19 @@
             <a class="sidebar-brand" href="#">
                 <span class="align-middle">ASISTENCIA QR</span>
             </a>
-    
+
             <ul class="sidebar-nav">
                 <li class="sidebar-header">
                     Menu
                 </li>
-    
+
                 <li class="sidebar-item" routerLinkActive="active">
                     <a class="sidebar-link"  routerLink="/dashboard/empleados">
                         <i class="align-middle" data-feather="sliders"></i>
                         <span class="align-middle">Empleados</span>
                     </a>
                 </li>
-    
+
                 <li class="sidebar-item" routerLinkActive="active">
                     <a class="sidebar-link" routerLink="/dashboard/asistencias">
                         <i class="align-middle" data-feather="user"></i>
@@ -33,19 +33,19 @@
 
         </div>
     </nav>
-    
+
 
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
-			
+
 			<button id="sidebarCollapse" class="btn btn-hamburger" onclick="toggleSidebar()">
 				<i class="hamburger-icon fas fa-bars"></i>
 			</button>
-			
-            
+
+
             <div class="navbar-collapse collapse">
                 <ul class="navbar-nav navbar-align">
-            
+
                     <li class="nav-item dropdown">
                         <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
                             <i class="align-middle" data-feather="settings"></i>
@@ -67,7 +67,7 @@
             </div>
         </nav>
 
-        <main class="content">
+        <main class="p-3">
             <router-outlet></router-outlet>
         </main>
 
