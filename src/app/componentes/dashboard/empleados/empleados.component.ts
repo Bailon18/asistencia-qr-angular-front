@@ -67,31 +67,23 @@ export class EmpleadosComponent implements OnInit {
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet([]);
 
-      // Añadir una fila vacía encima del título para espaciarlo
       XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A1' });
-
-      // Añadir el título y aplicar el estilo de alineación centrada
       XLSX.utils.sheet_add_aoa(ws, [['Listado de empleados']], { origin: 'A2' });
 
-      // Estilo de alineación centrada
       const centerAlignment = {
         alignment: { horizontal: 'center' }
       };
 
-      // Aplicar el estilo al título
       ws['A2'].s = centerAlignment;
-
-      // Añadir una fila vacía debajo del título para espaciarlo
       XLSX.utils.sheet_add_aoa(ws, [['']], { origin: 'A3' });
 
       // Fusionar las celdas para centrar el título
-      const titleRange = { s: { r: 1, c: 0 }, e: { r: 1, c: 6 } }; // Suponiendo 7 columnas
+      const titleRange = { s: { r: 1, c: 0 }, e: { r: 1, c: 6 } };
       if (!ws['!merges']) {
         ws['!merges'] = [];
       }
       ws['!merges'].push(titleRange);
 
-      // Añadir los encabezados de las columnas, empezando desde la fila 4
       XLSX.utils.sheet_add_aoa(ws, [
         ['EMPLEADO', 'INE', 'CORREO', 'TELEFONO', 'CARGO', 'TURNO', 'FECHA DE REGISTRO']
       ], { origin: 'A4' });
@@ -109,9 +101,7 @@ export class EmpleadosComponent implements OnInit {
         XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
       });
 
-      // Verificar si hay datos en la hoja de cálculo
       if (ws['!ref']) {
-        // Ajustar la anchura de las columnas según el contenido
         const columnWidths = [];
         const range = XLSX.utils.decode_range(ws['!ref']);
         for (let C = range.s.c; C <= range.e.c; ++C) {
@@ -138,8 +128,6 @@ export class EmpleadosComponent implements OnInit {
       });
     });
   }
-
-
 
 
   generarPdf() {
@@ -214,9 +202,6 @@ export class EmpleadosComponent implements OnInit {
       });
     });
   }
-
-
-
 
 
   aplicarFiltro(event: Event) {

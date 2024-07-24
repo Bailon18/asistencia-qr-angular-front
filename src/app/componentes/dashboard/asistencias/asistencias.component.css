@@ -1,0 +1,116 @@
+table {
+    width: 100%;
+  }
+  
+  .iconosAccion {
+  margin: 3px;
+  }
+  .success-icon{
+  color:green
+  }
+  .danger-icon{
+  color:red
+  }
+  .pdf-icon{
+  color:rgb(97, 74, 74)
+  }
+  
+  .example-margin {
+  margin: 0 10px;
+  }
+  
+
+  
+#colum{
+    color: white;
+    background-color:#2f4053;
+    font-family: 'Roboto';
+}
+
+
+.mat-no-data-row {
+  background-color: #f8d7da; 
+  color: #721c24; 
+}
+
+
+.no-data-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+.no-data-message mat-icon {
+  margin-right: 8px;
+  font-size: 20px;
+  color: #721c24; 
+}
+
+
+
+
+
+.mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: #212529;
+}
+.titulodisabled{
+    color: #1b428a;
+}
+
+.nombrepaciente{
+    font-weight: 500;
+}
+
+
+mat-form-field {
+    width: 100%;
+  }
+  
+
+
+.mat-dialog-content {
+    height: 50vh;
+}
+
+
+.separacion{
+    height: 2px;
+}
+
+.archivo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    color: #333;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    height: 40px;
+}
+
+.archivo-link:hover {
+    background-color: #e7e7e7;
+}
+
+.archivo-icon {
+    margin-right: 8px;
+}
+
+/* Archivo styles.css o styles.scss */
+.negative-time {
+  color: red; /* Color rojo para valores negativos */
+}
+
+.positive-time {
+  color: green; /* Color verde para valores positivos */
+}
+
+.time-format {
+  font-weight: bold; /* Opcional: hacer el texto en negrita */
+}

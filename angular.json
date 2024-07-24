@@ -30,7 +30,14 @@
               "src/assets/css/app.css"
             ],
             "scripts": [],
-            "allowedCommonJsDependencies": ["sweetalert2"]
+            "allowedCommonJsDependencies": [
+              "sweetalert2",
+              "canvg",
+              "jspdf-autotable",
+              "core-js",
+              "raf",
+              "rgbcolor"
+            ]
           },
           "configurations": {
             "production": {

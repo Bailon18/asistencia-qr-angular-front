@@ -1,19 +1,173 @@
 <div class="container-fluid p-0">
-
-    <h1 class="h3 mb-3"><strong>Asistencias</strong></h1>
-
+    <h2><strong>Asistencia</strong></h2>
     <div class="row">
+        <div class="col-12">
 
-        <div class="col-12 col-md-12 col-lg-12 col-xl-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Listado de asistencias</h5>
-                </div>
-                <div class="card-body h-100">
+            <mat-card>
+                <mat-card-content>
+                    <!-- Filtros y acciones -->
 
-                </div>
-            </div>
+                    <form [formGroup]="reportForm">
+                        <div class="row g-3 align-items-center" >
+                            <div class="col-8">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Ingrese el rango de fechas</mat-label>
+                                    <mat-date-range-input [rangePicker]="picker">
+                                        <input matStartDate formControlName="fechainicio" placeholder="Fecha inicio">
+                                        <input matEndDate formControlName="fechafinal" placeholder="Fecha Final">
+                                    </mat-date-range-input>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-date-range-picker #picker></mat-date-range-picker>
+                                </mat-form-field>
+                            </div>
+                    
+                            <div class="col-4">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Estado de asistencia</mat-label>
+                                    <mat-select formControlName="estadoAsistencia">
+                                        <mat-option value="TODO">Todo</mat-option>
+                                        <!-- <mat-option value="NORMAL">Normal</mat-option> -->
+                                        <mat-option value="PENDIENTE">Pendiente</mat-option>
+                                        <mat-option value="TIEMPO_EXTRA">Tiempo extra</mat-option>
+                                        <mat-option value="TIEMPO_FALTANTE">Tiempo faltante</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                              <mat-form-field appearance="fill" class="w-100">
+                                <mat-label>Empleado</mat-label>
+                                <input type="text"
+                                       placeholder="Busque por nombre - apellido - cedula"
+                                       aria-label="Empleado"
+                                       matInput
+                                       formControlName="campoBusqueda"
+                                       [matAutocomplete]="auto"
+                                       (input)="buscarEmpleado($event)">
+                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                  <mat-option *ngFor="let empleado of sugerencias" [value]="empleado" (click)="seleccionarSugerencia(empleado)">
+                                    {{ empleado.nombres }} - {{ empleado.apellidos }} ({{ empleado.ine }})
+                                  </mat-option>
+                                </mat-autocomplete>
+                                <mat-error *ngIf="isValidField('campoBusqueda')">
+                                  {{ getFieldError('campoBusqueda') }}
+                                </mat-error>
+                              </mat-form-field>
+                            </div>
+                          
+                            <div class="col-md-4 d-flex align-items-center">
+                              <mat-checkbox formControlName="checktodos" style="margin-right: 20px;" (change)="validarcampocheck()">Todos</mat-checkbox>
+                              <button mat-raised-button color="primary" [disabled]="reportForm.invalid" (click)="buscarconsulta()">
+                                <i class="fas fa-search"></i> Buscar
+                              </button>
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-center">
+                                <button mat-raised-button style="background-color: red; color: white; margin-left: 10px;" (click)="generarPdf()">
+                                    <i class="fas fa-file-pdf"></i> Exportar Pdf
+                                  </button>
+                                  <button mat-raised-button style="background-color: rgb(28, 78, 78); color: white; margin-left: 10px;" (click)="generarExcel()">
+                                    <i class="fas fa-file-excel"></i> Exportar Excel
+                                  </button>
+                            </div>
+                          </div>
+                          
+
+                    </form>
+
+                    <br>
+
+                    <!-- Tabla de datos -->
+                    <div class="mat-elevation-z8" style="max-height: 400px; overflow-y: auto;">
+                        <table mat-table [dataSource]="dataSource" class="mat-table">
+
+                            <!-- Columnas de la tabla -->
+                            <ng-container matColumnDef="ID">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> ID </th>
+                                <td mat-cell *matCellDef="let fila"> {{fila.id}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="EMPLEADO">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Empleado </th>
+                                <td mat-cell *matCellDef="let fila"> {{ fila.nombreCompletoEmpleado }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="FECHA">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Fecha </th>
+                                <td mat-cell *matCellDef="let fila"> {{ fila.fecha }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="HORA ENTRADA">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Hora entrada </th>
+                                <td mat-cell *matCellDef="let fila"> {{ formatTime2(fila.horaEntrada) }} </td>
+                            </ng-container>
+                            
+                            <ng-container matColumnDef="HORA SALIDA">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Hora salida </th>
+                                <td mat-cell *matCellDef="let fila"> {{ formatTime2(fila.horaSalida) }} </td>
+                            </ng-container>
+                            
+
+                            <ng-container matColumnDef="ESTADO">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Estado </th>
+                                <td mat-cell *matCellDef="let fila"> {{ fila.estado }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="TIEMPO ADICIONAL">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Tiempo adicional </th>
+                                <td mat-cell *matCellDef="let fila" class="positive-time">
+                                  <ng-container *ngIf="fila.tiempoAdicional">
+                                    <i class="fas fa-plus"></i> {{ formatTime(fila.tiempoAdicional) }}
+                                  </ng-container>
+                                </td>
+                              </ng-container>
+                              
+                              <ng-container matColumnDef="TIEMPO FALTANTE">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Tiempo faltante </th>
+                                <td mat-cell *matCellDef="let fila" class="negative-time">
+                                  <ng-container *ngIf="fila.tiempoFaltante">
+                                    <i class="fas fa-minus"></i> {{ formatTime(fila.tiempoFaltante) }}
+                                  </ng-container>
+                                </td>
+                              </ng-container>
+                              
+                              
+                              
+
+                            <ng-container matColumnDef="ACCIONES">
+                                <th mat-header-cell *matHeaderCellDef id="colum"> Acciones </th>
+                                <td mat-cell *matCellDef="let fila">
+                                    <a class="pointer iconosAccion" matTooltip="Editar Asistencia">
+                                        <mat-icon class="success-icon">edit</mat-icon>
+                                    </a>
+                                    <a class="pointer iconosAccion" matTooltip="Eliminar Asistencia" (click)="eliminar_asistencia(fila)">
+                                        <mat-icon class="danger-icon">delete</mat-icon>
+                                    </a>
+                                </td>
+                            </ng-container>
+
+                            <!-- Filas de la tabla -->
+                            <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+                            <tr class="mat-row mat-no-data-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="8">
+                                    <div class="no-data-message">
+                                        <mat-icon>info</mat-icon>
+                                        <span>No se encontraron asistencia con ese filtro</span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                            (page)="listarAsistencia($event.pageIndex, $event.pageSize)">
+                        </mat-paginator>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
-
 </div>

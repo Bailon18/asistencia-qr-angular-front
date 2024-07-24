@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { ComponentesModule } from './componentes/componentes.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
   ],
   providers: [
+    DatePipe,
     { provide: LOCALE_ID, useValue: 'es' },
   ],
   bootstrap: [AppComponent]
