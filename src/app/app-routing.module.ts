@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InicioComponent } from './componentes/inicio/inicio.component';
+import { TomaAsistenciaComponent } from './componentes/toma-asistencia/toma-asistencia.component';
 
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'inicio', component: InicioComponent },
+  { path: '', redirectTo: 'tomar_asistencia', pathMatch: 'full' },
+  { path: 'tomar_asistencia', component: TomaAsistenciaComponent },
   { path: 'dashboard', loadChildren: () => import('./componentes/dashboard/dashboard.module').then(m => m.DashboardModule) },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '**', redirectTo: 'tomar_asistencia' }
 ]
 
 

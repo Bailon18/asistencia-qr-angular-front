@@ -8,6 +8,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 
+
+
+
 @NgModule({
   declarations: [
     AppComponent
@@ -17,7 +20,7 @@ import { DatePipe } from '@angular/common';
     ComponentesModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [
     DatePipe,

@@ -384,15 +384,20 @@ export class AsistenciasComponent implements OnInit{
     const requests: Promise<any>[] = []; // Declarar el tipo explícitamente
   
     const campoBusqueda = this.reportForm.get('campoBusqueda')?.value;
-    const fechaInicio = this.formatDate(this.reportForm.get('fechainicio')?.value);
-    const fechaFinal = this.formatDate(this.reportForm.get('fechafinal')?.value);
     const estadoAsistencia = this.reportForm.get('estadoAsistencia')?.value;
-    const idEmpleado = parseInt(this.reportForm.get('idEmpleado')?.value);
+    const idEmpleado = parseInt(this.reportForm.get('idEmpleado')?.value) || 0;
+    
+    let fechaInicio: string = '';
+    let fechaFinal: string = '';
+    
+    if (this.reportForm.get('fechainicio')?.value && this.reportForm.get('fechafinal')?.value) {
+        fechaInicio = this.formatDate(this.reportForm.get('fechainicio')?.value);
+        fechaFinal = this.formatDate(this.reportForm.get('fechafinal')?.value);
+    }
   
   
     if (estadoAsistencia && fechaInicio && fechaFinal) {
-      console.log('ingresoooo')
-      // Filtro aplicado
+
       this.asistenciaService.listarAsistenciaEmpleado(idEmpleado, fechaInicio, fechaFinal, estadoAsistencia, 0, this.pageSize).subscribe(response => {
         if (response) {
           totalPages = Math.ceil(response.totalElements / this.pageSize);
@@ -470,7 +475,7 @@ export class AsistenciasComponent implements OnInit{
         });
       });
     } else {
-      // Sin filtro aplicado
+
       totalPages = this.totalpages; // Usar totalpages aquí
       
       for (let page = 0; page < totalPages; page++) {

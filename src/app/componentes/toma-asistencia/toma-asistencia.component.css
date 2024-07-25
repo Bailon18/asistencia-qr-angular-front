@@ -1,0 +1,16 @@
+/* asistencias.component.css */
+mat-toolbar {
+    display: flex;
+    justify-content: space-between; /* This ensures space is distributed between elements */
+    align-items: center; /* Aligns items vertically centered */
+  }
+  
+  .toolbar-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .toolbar-spacer {
+    flex: 1; /* This creates space between the title and the button */
+  }
+  
