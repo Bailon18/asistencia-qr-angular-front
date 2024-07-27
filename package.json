@@ -28,6 +28,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "jsvectormap": "^1.5.3",
+    "ngx-scanner-qrcode": "^1.6.9",
     "rxjs": "~7.8.0",
     "simplebar": "^5.3.9",
     "sweetalert2": "^11.12.3",

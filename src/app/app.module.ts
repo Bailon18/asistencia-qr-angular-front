@@ -1,4 +1,4 @@
-import { NgModule , LOCALE_ID} from '@angular/core';
+import { NgModule , LOCALE_ID, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -7,7 +7,7 @@ import { ComponentesModule } from './componentes/componentes.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-
+import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
 
 
 
@@ -26,6 +26,7 @@ import { DatePipe } from '@angular/common';
     DatePipe,
     { provide: LOCALE_ID, useValue: 'es' },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

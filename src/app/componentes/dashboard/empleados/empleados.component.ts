@@ -95,7 +95,7 @@ export class EmpleadosComponent implements OnInit {
           empleado.correo,
           empleado.telefono,
           empleado.cargo,
-          empleado.turno.nombre,
+          empleado.turno?.nombre,
           empleado.fechaRegistro
         ];
         XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
@@ -170,12 +170,12 @@ export class EmpleadosComponent implements OnInit {
 
       const data = allData.map(empleado => ({
         empleado: `${empleado.nombres} ${empleado.apellidos}`,
-        ine: empleado.ine,
+        ine: empleado.ine || '',
         correo: empleado.correo || '',  // Convertir undefined a string vacío
         telefono: empleado.telefono || '',  // Convertir undefined a string vacío
         cargo: (empleado.cargo as unknown as string) || '',  // Convertir enums a string
         turno: empleado.turno?.nombre || '',  // Convertir undefined a string vacío
-        TipoEmpleado: empleado.tipoEmpleado // Convertir Date a string de fecha
+        TipoEmpleado: empleado.tipoEmpleado || '' // Convertir Date a string de fecha
       }));
 
       autoTable(doc, {

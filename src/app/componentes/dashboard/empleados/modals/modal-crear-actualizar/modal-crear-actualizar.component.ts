@@ -83,8 +83,8 @@ export class ModalCrearActualizarComponent implements OnInit {
             correo: resp.correo,
             direccion: resp.direccion,
             telefono: resp.telefono,
-            turno: resp.turno.id,
-            fechaNacimiento: new Date(resp.fechaNacimiento),
+            turno: resp.turno?.id , // posible undefined value
+            fechaNacimiento: resp.fechaNacimiento ? new Date(resp.fechaNacimiento) : null,
             tipoEmpleado: resp.tipoEmpleado,
             cargo: resp.cargo
           });

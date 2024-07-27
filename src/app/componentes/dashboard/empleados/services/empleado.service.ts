@@ -21,7 +21,7 @@ export class EmpleadosService {
 
 
   buscarEmpleadoId(id:number): Observable<Empleado>{
-    return this.http.get<Empleado>(`${baseUrl}/api/empleado/${id}`);
+    return this.http.get<Empleado>(`${baseUrl}/api/empleado/obtenerEmpleadoId/${id}`);
   }
 
   filtrarEmpleados(searchText: string, page: number = 0, size: number = 5): Observable<any> {
