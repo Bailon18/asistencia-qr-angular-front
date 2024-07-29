@@ -1,1 +1,20 @@
-<p>asistencia-cliente works!</p>
+
+  
+  <mat-toolbar class="custom-toolbar">
+    <div class="toolbar-left">
+        <button mat-button routerLink="/tomar-asistencia/tomar-asistencia">
+        <mat-icon>assignment</mat-icon>
+        <span class="toolbar-text">Toma Asistencia</span>
+      </button>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <div class="toolbar-right">
+      <button mat-button (click)="ingresarLogin()" class="toolbar-button">
+        <mat-icon>login</mat-icon>
+        <span class="toolbar-text">Iniciar Sesión</span>
+      </button>
+    </div>
+  </mat-toolbar>
+  
+  <router-outlet></router-outlet>
+  

@@ -70,6 +70,11 @@ export class EmpleadosService {
     return this.http.get<boolean>(`${baseUrl}/api/empleado/validar/ine`, { params });
   }
 
+  verificarUsername(ine: string): Observable<boolean> {
+    const params = new HttpParams().set('ine', ine);
+    return this.http.get<boolean>(`${baseUrl}/api/empleado/validar/username`, { params });
+  }
+
   verificarTelefono(telefono: string): Observable<boolean> {
     const params = new HttpParams().set('telefono', telefono);
     return this.http.get<boolean>(`${baseUrl}/api/empleado/validar/telefono`, { params });

@@ -7,7 +7,7 @@ import { ComponentesModule } from './componentes/componentes.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { NgxScannerQrcodeModule } from 'ngx-scanner-qrcode';
+
 
 
 

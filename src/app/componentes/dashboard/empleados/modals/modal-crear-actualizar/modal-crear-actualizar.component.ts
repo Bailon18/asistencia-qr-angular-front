@@ -30,8 +30,10 @@ export class ModalCrearActualizarComponent implements OnInit {
   correoOriginal: string = '';
   nombreOriginal: string = '';
   apellidoOriginal: string = '';
+  usernameOriginal: string = '';
   ineOriginal: string = '';
   telefonoOriginal: string = '';
+  mostrarCamposAdmin: boolean = false;
 
   @ViewChild('imagenInputFile', { static: false }) imagenInputFile?: ElementRef;
 
@@ -67,6 +69,8 @@ export class ModalCrearActualizarComponent implements OnInit {
       foto:  ['', Validators.required],
       cargo: ['Contabilidad', Validators.required],
       fotourl: [''],
+      username: [''],
+      contrasena: ['']
     });
 
     if (this.datoedit) {
@@ -83,11 +87,14 @@ export class ModalCrearActualizarComponent implements OnInit {
             correo: resp.correo,
             direccion: resp.direccion,
             telefono: resp.telefono,
-            turno: resp.turno?.id , // posible undefined value
+            turno: resp.turno?.id , 
             fechaNacimiento: resp.fechaNacimiento ? new Date(resp.fechaNacimiento) : null,
             tipoEmpleado: resp.tipoEmpleado,
-            cargo: resp.cargo
+            cargo: resp.cargo,
+            username: resp.username,
+            contrasena: resp.contrasena
           });
+
 
           this.fotoEditado = 'data:image/png;base64,' + resp.foto;
           const imagenBase64 = 'data:image/png;base64,' + resp.foto;
@@ -96,6 +103,8 @@ export class ModalCrearActualizarComponent implements OnInit {
 
           this.titulo = "Editar Empleado";
           this.botonTexto = "Actualizar Empleado"
+
+          this.mostrarCamposAdmin = resp.tipoEmpleado === 'Administrador';
 
         },
         error: (error) => {
@@ -110,6 +119,24 @@ export class ModalCrearActualizarComponent implements OnInit {
     
   }
 
+  onRoleChange(event: any) {
+    const role = event.value;
+    const usernameControl = this.empleadoForm.get('username');
+    const contrasenaControl = this.empleadoForm.get('contrasena');
+
+    if (role === 'Administrador') {
+      usernameControl?.setValidators([Validators.required]);
+      contrasenaControl?.setValidators([Validators.required, Validators.minLength(5)]);
+      this.mostrarCamposAdmin = true;
+    } else {
+      usernameControl?.clearValidators();
+      contrasenaControl?.clearValidators();
+      this.mostrarCamposAdmin = false;
+    }
+
+    usernameControl?.updateValueAndValidity();
+    contrasenaControl?.updateValueAndValidity();
+  }
   guardarEmpleado() {
 
     if (this.empleadoForm.valid) {
@@ -132,11 +159,14 @@ export class ModalCrearActualizarComponent implements OnInit {
           telefono: this.empleadoForm.value.telefono,
           turno: { id: this.empleadoForm.value.turno },
           fechaNacimiento: this.empleadoForm.value.fechaNacimiento,
-          tipoEmpleado: this.empleadoForm.value.tipoEmpleado ,
+          tipoEmpleado: this.empleadoForm.value.tipoEmpleado,
           fechaRegistro: new Date(),
           cargo: this.empleadoForm.value.cargo,
-          foto: null
+          foto: null,
+          username: this.empleadoForm.value.username ? this.empleadoForm.value.username : "",
+          contrasena: this.empleadoForm.value.contrasena ? this.empleadoForm.value.contrasena : ""
         }
+        
 
         if (this.datoeditEmpleado != null) {
           mensaje = 'Empleado actualizado correctamente!';
@@ -290,6 +320,9 @@ export class ModalCrearActualizarComponent implements OnInit {
         case 'telefonoInvalid':
           return `Teléfono ya esta registrado`;
 
+        case 'usernameInvalid':
+          return `Username ya esta registrado`;
+
         case 'fotoInvalid':
 
         case 'empleadoExiste':
@@ -364,6 +397,30 @@ export class ModalCrearActualizarComponent implements OnInit {
             this.empleadoForm.controls['ine'].setErrors({ ineInvalid: true});
           }else{
             this.empleadoForm.controls['ine'].setErrors(null);
+          }
+        })
+      }
+
+
+    }
+
+  }
+
+
+  
+  validarUsername(event: any){
+
+    if (this.empleadoForm.controls['username'].valid){
+
+      const username = (event.target as HTMLInputElement).value;
+
+      if(username != this.usernameOriginal){
+
+        this.empleadoService.verificarUsername(username).subscribe(res => {
+          if(res){
+            this.empleadoForm.controls['username'].setErrors({ usernameInvalid: true});
+          }else{
+            this.empleadoForm.controls['username'].setErrors(null);
           }
         })
       }

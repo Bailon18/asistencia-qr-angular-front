@@ -292,6 +292,7 @@ export class EmpleadosComponent implements OnInit {
   nuevo_empleado() {
     this.dialog.open(ModalCrearActualizarComponent, {
          width:'600px',
+         minHeight:'650px',
      }).afterClosed().subscribe(valor =>{
         this.listarEmpleados(0, 4);
     });
@@ -300,6 +301,7 @@ export class EmpleadosComponent implements OnInit {
   editar_empleado(fila: any){
     this.dialog.open(ModalCrearActualizarComponent,{
       width:'600px',
+      minHeight:'650px',
       data:fila
     }).afterClosed().subscribe(valor =>{
       this.listarEmpleados(0, 4);

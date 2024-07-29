@@ -17,6 +17,8 @@ export interface Empleado {
     tipoEmpleado ?: TipoEmpleado;
     cargo ?: Cargos;
     //estado: boolean;
-    foto ?: string | SafeResourceUrl | null
+    foto ?: string | SafeResourceUrl | null,
+    username?: string;
+    contrasena?: string
 }
 
