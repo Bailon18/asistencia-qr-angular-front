@@ -259,7 +259,7 @@ export class EmpleadosComponent implements OnInit {
 
         this.totalpages = res.totalPages
         this.totalElements = res.totalElements
-        console.log('totalpages ', this.totalpages)
+        console.log('totalpages ', res)
         console.log('totalElements ', this.totalElements)
         if (res && res.content && res.content.length > 0) {
           this.dataSource = new MatTableDataSource<Empleado>(res.content);

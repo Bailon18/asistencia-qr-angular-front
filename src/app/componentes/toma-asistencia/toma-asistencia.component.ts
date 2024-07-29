@@ -14,6 +14,8 @@ import { EstadoAsistencia } from '../dashboard/asistencias/model/estado-asistenc
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Empleado } from '../dashboard/empleados/model/empleados';
+import { Subscription, timer } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toma-asistencia',
@@ -28,6 +30,29 @@ export class TomaAsistenciaComponent implements OnInit{
   empleadoSeleccionado: string = '';
   sugerencias: Empleado[] = [];
   selectedCamera: string | null = null;
+
+  @ViewChild('action') action!: NgxScannerQrcodeComponent;
+
+  public percentage = 100;
+  public quality = 100;
+
+
+  digits: number[] = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+  hourHandPosition = 0
+  minuteHandPosition = 0;
+  secondHandPosition = 0;
+
+  dateTime = {
+    year: '',
+    month: '',
+    day: '',
+    hour: '',
+    minute: '',
+    second: '',
+  }
+
+  counter !: Subscription
 
   tomarasistenciaForm: FormGroup;
 
@@ -44,38 +69,84 @@ export class TomaAsistenciaComponent implements OnInit{
     ]
   };
   
-  @ViewChild('action') action!: NgxScannerQrcodeComponent;
-
-  public percentage = 100;
-  public quality = 100;
 
   constructor(
     private qrcode: NgxScannerQrcodeService,
     private tomaasistenciaService: TomaAsistenciaService,
     private empleadoService: EmpleadosService,
     private formbuilder: FormBuilder,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
 
-    setTimeout(() => {
-      this.handle(this.action, 'start');
-    }, 0); 
-
+    // setTimeout(() => {
+    //   this.handle(this.action, 'start');
+    // }, 0); 
+    //this.handle(this.action, 'start');
+    this.startCamera();
     this.tomarasistenciaForm = this.formbuilder.group({
       campoBusqueda: [''],
       idEmpleado: [''],
     });
+
+    this.startClock()
   }
 
+  startCamera(): void {
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => {
+        requestAnimationFrame(() => {
+          this.handle(this.action, 'start');
+        });
+      });
+    } else {
+      requestAnimationFrame(() => {
+        this.handle(this.action, 'start');
+      });
+    }
+  }
   
+  startClock(){
+    this.counter = timer(0, 1000).subscribe(res => {
+      let date = new Date();
+    
+      let second = date.getSeconds();
+      let minute = date.getMinutes();
+      let hour = date.getHours();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      this.dateTime.year = year.toString();
+      this.dateTime.month = this.displayDoubleDigits(month);
+      this.dateTime.day = this.displayDoubleDigits(day);
+
+      this.dateTime.hour = this.displayDoubleDigits(hour);
+      this.dateTime.minute = this.displayDoubleDigits(minute);
+      this.dateTime.second = this.displayDoubleDigits(second);
+    
+  
+      this.secondHandPosition =((second / 60) * 360) + 90;
+      this.minuteHandPosition = ((minute / 60) * 360) + ((second / 60) * 6) + 90;
+      this.hourHandPosition = ((hour / 12) * 360) + ((minute / 60) * 30) + 90;
+
+    });
+  }
+
+
+  displayDoubleDigits(value: number): string {
+      return ('00'+ value).slice(-2)
+  }
+  
+
   ngAfterViewInit(): void {
     this.action.isReady.subscribe((res: any) => {
       this.applyConstraints();
     });
   }
 
-  public onCameraSelectionChange(deviceId: string | null): void {
+  onCameraSelectionChange(deviceId: string | null): void {
     if (deviceId) {
       this.selectedCamera = deviceId;
       this.handle(this.action, 'start');
@@ -96,14 +167,12 @@ export class TomaAsistenciaComponent implements OnInit{
     });
   }
   
-
   isValidField(field: string): boolean | null {
     return (
       this.tomarasistenciaForm.controls[field].errors &&
       this.tomarasistenciaForm.controls[field].touched
     );
   }
-
 
   getFieldError(field: string): string | null {
     if (!this.tomarasistenciaForm.controls[field]) return null;
@@ -130,12 +199,7 @@ export class TomaAsistenciaComponent implements OnInit{
     if(empleado.id != undefined && empleado.id != null){
       
       this.tomarAsistencia(empleado.id)
-
-
     }
-
-
-
   }
 
   onEvent(e: ScannerQRCodeResult[], action?: any): void {
@@ -304,16 +368,14 @@ export class TomaAsistenciaComponent implements OnInit{
     });
 
     this.sugerencias = [];
-
   }
   
-  private extractIneNumber(text: string): string | null {
+  extractIneNumber(text: string): string | null {
     const match = text.match(/-\s*(\d+)/);
     return match ? match[1] : null;
   }
   
-
-  public handle(action: any, fn: string): void {
+  handle(action: any, fn: string): void {
     const playDeviceFacingBack = (devices: any[]) => {
       const device = devices.find(f => (/back|rear|environment/gi.test(f.label)));
       action.playDevice(device ? device.deviceId : devices[0].deviceId);
@@ -326,7 +388,7 @@ export class TomaAsistenciaComponent implements OnInit{
     }
   }
 
-  public applyConstraints() {
+  applyConstraints() {
     const width = window.innerWidth * (this.percentage / 100);
     const height = window.innerHeight * (this.percentage / 100);
     const frameRate = { ideal: (this.quality / 100) * 60, max: 60 };
@@ -341,4 +403,9 @@ export class TomaAsistenciaComponent implements OnInit{
     });
 
   }
+
+  ingresarLogin(){
+    this.router.navigate(['/login']);
+  }
+
 }

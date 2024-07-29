@@ -1,0 +1,57 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  mat-card {
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+  
+  .mat-card-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 35px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .mat-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .password-field {
+    position: relative;
+  }
+  
+  mat-icon {
+    cursor: pointer;
+    color: #2c3e50;
+  }
+  
+  .login-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  button[mat-raised-button] {
+    width: 100%;
+    background-color: #2c3e50;
+    color: white;
+  }
+  
+  button[mat-raised-button]:hover {
+    background-color: #1b2a3d;
+  }
+  

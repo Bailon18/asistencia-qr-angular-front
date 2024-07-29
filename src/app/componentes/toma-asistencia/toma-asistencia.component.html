@@ -1,33 +1,30 @@
 <!-- asistencias.component.html -->
+
+<link href="https://fonts.googleapis.com/css2?family=Digital-7&display=swap" rel="stylesheet">
+
 <mat-toolbar style="background-color: #2f4053; color: white;">
   <span class="toolbar-title">
     <mat-icon>assignment</mat-icon>
     <span style="margin-left: 8px;">Toma Asistencia</span>
   </span>
-  <span class="toolbar-spacer"></span>
-  <button mat-button>
+  <span class="toolbar-spacer" ></span>
+  <button mat-button  (click)='ingresarLogin()'>
     <mat-icon>login</mat-icon>
     <span style="margin-left: 4px;">Iniciar Sesión</span>
   </button>
 </mat-toolbar>
 
-<div class="container mt-4">
+<!-- <div class="container mt-4">
   <div class="row" style="background-color: transparent;">
-    <div class="col-6">
+    <div class="col-md-6 col-sm-12">
       <div class="card responsive-card">
-        <div class="card-header">
-          <h5 class="card-title"></h5>
-        </div>
-        <div class="card-body">
+        <div class="card-body" style="height: 100%;">
           <h1>Tomar Asistencia</h1>
-
-          
           <div [formGroup]="tomarasistenciaForm">
-
             <mat-form-field appearance="fill" class="w-100">
               <mat-label>Tomar asistencia por INE</mat-label>
               <input type="text"
-                     placeholder="Busque empleado  nombre - apellido - ine"
+                     placeholder="Busque empleado nombre - apellido - ine"
                      aria-label="Empleado"
                      matInput
                      formControlName="campoBusqueda"
@@ -40,13 +37,11 @@
               </mat-autocomplete>
             </mat-form-field>
           </div>
-
           <div class="scanner-container">
             <ngx-scanner-qrcode #action="scanner" [config]="config" (event)="onEvent($event, action)" class="scanner"></ngx-scanner-qrcode>
             <p *ngIf="action.isLoading">⌛ Loading...</p>
           </div>
           <br>
-      
           <div class="row">
             <div class="col-12">
               <select #select1 (change)="action.playDevice(select1.value)" class="form-select form-select-md">
@@ -59,18 +54,45 @@
         </div>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-md-6 col-sm-12">
       <div class="card responsive-card">
-        <div class="card-header">
-          <h5 class="card-title">Escáner 2</h5>
-        </div>
-        <div class="card-body">
-          <h1>ngx-scanner-qrcode</h1>
+        <div class="card-body d-flex flex-column justify-content-between">
+
+          <div class="clock" style="margin-top: 3px;">
+            <div class="clock-face">
+              <div class="digit">1</div>
+              <div class="digit">2</div>
+              <div class="digit">3</div>
+              <div class="digit">4</div>
+              <div class="digit">5</div>
+              <div class="digit">6</div>
+              <div class="digit">7</div>
+              <div class="digit">8</div>
+              <div class="digit">9</div>
+              <div class="digit">10</div>
+              <div class="digit">11</div>
+              <div class="digit">12</div>
+              <div class="hand hour-hand" [ngStyle]="{'transform': 'rotate(' + hourHandPosition + 'deg)'}"></div>
+              <div class="hand minute-hand" [ngStyle]="{'transform': 'rotate(' + minuteHandPosition + 'deg)'}"></div>
+              <div class="hand second-hand" [ngStyle]="{'transform': 'rotate(' + secondHandPosition + 'deg)'}"></div>
+              <div class="center-point"></div>
+            </div>
+          </div>
 
 
+          <div class="clock-digital" style="margin-top: -25px;">
+            <span class="fecha">
+              {{dateTime.year}}-{{dateTime.month}}-{{dateTime.day}} 
+            </span>
+            <span class="separator">|</span>
+            <span class="hora">
+              {{dateTime.hour}}:{{dateTime.minute}}:{{dateTime.second}}
+            </span>
+          </div>
 
+          
         </div>
       </div>
     </div>
   </div>
-</div>
+</div> -->
