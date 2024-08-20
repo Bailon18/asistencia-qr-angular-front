@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   ScannerQRCodeConfig,
   ScannerQRCodeResult,
@@ -253,7 +253,10 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
                   });
                 } else if (resultadoAsistencia.horaSalida == null) {
                   this.tomaasistenciaService.actualizarAsistencia(resultadoAsistencia.id, this.empleadoIdSeleccionado, resultadoAsistencia.horaEntrada).subscribe({
+                    
                     next: (res) => {
+
+                      console.log("retorno es : ", res)
                       if (res) {
                         const now = new Date();
                         const fecha = now.toLocaleDateString();
@@ -276,8 +279,17 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
                       }
                     },
                     error: (error) => {
-                      console.error('Error al registrar la asistencia:', error);
+                      console.error('Error al actualizar la asistencia:', error);
+                      if (error.status !== 200) {
+                        console.log("Error details:", error.message);
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: 'Ocurrió un problema al actualizar la asistencia. Intente nuevamente.'
+                        });
+                      }
                     }
+                    
                   });
                 }
               } else {

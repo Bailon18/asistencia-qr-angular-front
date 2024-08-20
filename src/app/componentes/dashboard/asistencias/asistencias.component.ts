@@ -21,7 +21,7 @@ import * as XLSX from 'xlsx';
   selector: 'app-asistencias',
   templateUrl: './asistencias.component.html',
   styleUrls: ['./asistencias.component.css'],
-  providers: [DatePipe] // Asegúrate de añadir DatePipe a los proveedores
+  providers: [DatePipe]
 })
 export class AsistenciasComponent implements OnInit{
 
@@ -264,30 +264,21 @@ export class AsistenciasComponent implements OnInit{
     
   }
 
+
   listarAsistencia(pageIndex: number, pageSize: number) {
     const page = pageIndex + 0;
-
-    let timerInterval: any;
-
+  
     swall.fire({
       title: "Cargando...",
       html: "Por favor espere mientras se cargan los datos.",
       allowOutsideClick: false,
       didOpen: () => {
         swall.showLoading();
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
       }
     });
-
+  
     this.asistenciaService.getAsistencia(page, pageSize).subscribe({
-
       next: res => {
-
-        this.totalpages = res.totalPages
-        this.totalElements = res.totalElements
-
         if (res && res.content && res.content.length > 0) {
           this.dataSource = new MatTableDataSource<AsistenciaDTO>(res.content);
           this.totalItems = res.totalElements;
@@ -300,22 +291,32 @@ export class AsistenciasComponent implements OnInit{
           this.pageSize = pageSize;
           this.pageIndex = pageIndex;
           this.dataSourceCopy = [];
-
+  
+          swall.fire({
+            icon: 'info',
+            title: 'Sin datos',
+            text: 'No se encontraron asistencias para mostrar.',
+            confirmButtonText: 'Aceptar'
+          });
         }
-
+  
+        // Siempre cerrar el diálogo de carga
         swall.close();
       },
       error: error => {
+        console.error("Ocurrió un error en la carga:", error);
         swall.close();
         swall.fire({
           icon: 'error',
           title: 'Error',
           text: 'Ocurrió un error en la carga'
         });
-        console.log("Ocurrió un error en la carga");
       }
     });
   }
+  
+
+  
 
   eliminar_asistencia(fila: any) {
     swall.fire({
