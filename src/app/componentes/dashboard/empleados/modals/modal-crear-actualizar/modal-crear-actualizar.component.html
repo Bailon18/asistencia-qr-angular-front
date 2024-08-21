@@ -41,14 +41,22 @@
                     <mat-form-field appearance="fill" class="mb-1">
                         <mat-label>Cargo</mat-label>
                         <mat-select formControlName="cargo" name="cargo">
-                            <mat-option value='Contabilidad'>Contabilidad</mat-option>
-                            <mat-option value='Sistemas'>Sistemas</mat-option>
-                            <mat-option value='Cajero'>Cajero</mat-option>
+                            <mat-option value="Delegado">Delegado</mat-option>
+                            <mat-option value="Subdelegado">Subdelegado</mat-option>
+                            <mat-option value="RecursosHumanos">Rec. Humanos</mat-option>
+                            <mat-option value="RecursosMateriales">Rec. Materiales</mat-option>
+                            <mat-option value="AdultoMayor">Adulto Mayor</mat-option>
+                            <mat-option value="Informatica">Informática</mat-option>
+                            <mat-option value="Financieros">Financieros</mat-option>
+                            <mat-option value="Bienestar">Bienestar</mat-option>
+                            <mat-option value="Enlaces">Enlaces</mat-option>
+                            <mat-option value="Promotores">Promotores</mat-option>
                         </mat-select>
                         <mat-error *ngIf="isValidField('cargo')">
                             {{ getFieldError('cargo') }}
                         </mat-error>
                     </mat-form-field>
+                    
 
                     <mat-form-field appearance="fill" class="mb-1" *ngIf="mostrarCamposAdmin">
                         <mat-label>Username</mat-label>

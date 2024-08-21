@@ -94,6 +94,8 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
   }
 
   startCamera(): void {
+    this.isProcessing = false; // Resetea el estado de procesamiento al iniciar la cámara
+
     if ('requestIdleCallback' in window) {
       (window as any).requestIdleCallback(() => {
         requestAnimationFrame(() => {
@@ -109,6 +111,7 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
 
   stopCamera(): void {
     this.handle(this.action, 'stop');
+    this.isProcessing = true; // Evita que se procese otro escaneo mientras la cámara está detenida
   }
 
   startClock() {
@@ -200,8 +203,8 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.action.stop();
     this.isProcessing = true;
+    this.stopCamera();
 
     const result = e[0].value;
     let idEmpleadoStr = this.extractIneNumber(result) || '';
@@ -211,145 +214,193 @@ export class TomarAsistenciaComponent implements OnInit, OnDestroy {
   }
 
   tomarAsistencia(idEmpleado: number) {
-    this.showError = false; // Resetear la bandera de error antes de comenzar
+    
+    this.showError = false;
+
+    // Detener la cámara al iniciar el proceso de tomar asistencia
+    this.stopCamera();
+  
+
+    // VERIFICA SI EL EXPLICADO EXISTO O NO
     this.empleadoService.buscarEmpleadoId(idEmpleado).subscribe({
+
       next: (resultadoEmpleado) => {
+
+        // SINO EXISTE EMPLEADO
         if (resultadoEmpleado == null) {
+
           if (!this.showError) {
             this.showError = true;
             swall.fire({
               icon: 'error',
               title: 'Empleado no registrado',
               text: 'El empleado con el QR proporcionado no está registrado.'
+            }).then(() => {
+              this.startCamera(); 
             });
           }
-        } else {
-          this.empleadoIdSeleccionado = resultadoEmpleado.id || 0;
-          this.empleadoSeleccionado = `${resultadoEmpleado.nombres} ${resultadoEmpleado.apellidos}`;
+        } 
+        // SI EXISTE EMPLEADO
+        else {
 
-          const date = new Date();
-          const formattedDate = date.toISOString().split('T')[0];
+            const date = new Date();
+            const formattedDate = date.toLocaleDateString('en-CA'); // Formato ISO (YYYY-MM-DD)
+            this.empleadoIdSeleccionado = resultadoEmpleado.id || 0;
+            this.empleadoSeleccionado = `${resultadoEmpleado.nombres} ${resultadoEmpleado.apellidos}`;
+    
 
-          this.tomaasistenciaService.verificarAsistencia(this.empleadoIdSeleccionado, formattedDate).subscribe({
-            next: (resultadoAsistencia) => {
-              if (resultadoAsistencia != null) {
-                if (resultadoAsistencia.horaEntrada != null && resultadoAsistencia.horaSalida != null) {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Toma de asistencia completada',
-                    html: `
-                      <div style="text-align: left;">
-                        <p style="margin: 0;"><strong>${this.empleadoSeleccionado}</strong>, usted ya terminó de registrar su asistencia el día de hoy.</p>
-                        <ul style="margin: 0; padding-left: 20px;">
-                          <li>Fecha: <strong>${resultadoAsistencia.fecha}</strong></li>
-                          <li>Hora de ingreso: <strong>${resultadoAsistencia.horaEntrada}</strong></li>
-                          <li>Hora de salida: <strong>${resultadoAsistencia.horaSalida}</strong></li>
-                        </ul>
-                        <p style="margin: 0;">Inténtelo mañana.</p>
-                      </div>
-                    `
-                  }).then(() => {
-                    this.limpiarCampos();
-                  });
-                } else if (resultadoAsistencia.horaSalida == null) {
-                  this.tomaasistenciaService.actualizarAsistencia(resultadoAsistencia.id, this.empleadoIdSeleccionado, resultadoAsistencia.horaEntrada).subscribe({
-                    
-                    next: (res) => {
+            // VERIFICA SI EL EXPLEADO TIENE ASISTENCIA FECHA ACTUAL
+            this.tomaasistenciaService.verificarAsistencia(this.empleadoIdSeleccionado, formattedDate).subscribe({
 
-                      console.log("retorno es : ", res)
-                      if (res) {
-                        const now = new Date();
-                        const fecha = now.toLocaleDateString();
-                        const hora = now.toLocaleTimeString();
-                        Swal.fire({
-                          icon: 'success',
-                          title: 'Asistencia actualizada',
-                          html: `
-                            <div style="text-align: left;">
-                              <p><strong>${this.empleadoSeleccionado}</strong>, se ha registrado su horario de salida.</p>
-                              <ul style="margin: 0; padding-left: 20px;">
-                                <li>Fecha: <strong>${fecha}</strong></li>
-                                <li>Hora de salida: <strong>${hora}</strong></li>
-                              </ul>
-                            </div>
-                          `
-                        }).then(() => {
-                          this.limpiarCampos();
+                next: (resultadoAsistencia) => {
+
+          
+                    //  SI DEVUELVE VALOR ES POR QUE EXISTE 
+                    if (resultadoAsistencia != null) {
+
+                      // SI EL EMPLEADO YA TERMINO DE REGISTRAR SU ASISTENCIA ES POR HORA DE ENTRADA Y SALIDA ESTA LLENO
+                      if (resultadoAsistencia.horaEntrada != null && resultadoAsistencia.horaSalida != null) {
+
+        
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Toma de asistencia completada',
+                              html: `
+                                <div style="text-align: left;">
+                                  <p style="margin: 0;"><strong>${this.empleadoSeleccionado}</strong>, usted ya terminó de registrar su asistencia el día de hoy.</p>
+                                  <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Fecha: <strong>${resultadoAsistencia.fecha}</strong></li>
+                                    <li>Hora de ingreso: <strong>${resultadoAsistencia.horaEntrada}</strong></li>
+                                    <li>Hora de salida: <strong>${resultadoAsistencia.horaSalida}</strong></li>
+                                  </ul>
+                                  <p style="margin: 0;">Inténtelo mañana.</p>
+                                </div>
+                              `
+                            }).then(() => {
+                              this.limpiarCampos();
+                              this.startCamera();
+                            });
+
+                
+                      
+                      } else if (resultadoAsistencia.horaSalida == null) {
+
+                   
+
+                        this.tomaasistenciaService.actualizarAsistencia(resultadoAsistencia.id, this.empleadoIdSeleccionado, resultadoAsistencia.horaEntrada).subscribe({
+                          
+                          next: (res) => {
+
+                            if (res) {
+                              const now = new Date();
+                              const fecha = now.toLocaleDateString();
+                              const hora = now.toLocaleTimeString();
+                              Swal.fire({
+                                icon: 'success',
+                                title: 'Asistencia actualizada',
+                                html: `
+                                  <div style="text-align: left;">
+                                    <p><strong>${this.empleadoSeleccionado}</strong>, se ha registrado su horario de salida.</p>
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                      <li>Fecha: <strong>${fecha}</strong></li>
+                                      <li>Hora de salida: <strong>${hora}</strong></li>
+                                    </ul>
+                                  </div>
+                                `
+                              }).then(() => {
+                                this.limpiarCampos();
+                                this.startCamera();
+                              });
+                            }
+
+                          },
+                          error: (error) => {
+
+                            Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: 'Ocurrió un problema al actualizar la asistencia. Intente nuevamente.'
+                            }).then(() => {
+                              // Reiniciar la cámara después de mostrar el mensaje
+                              this.startCamera();
+                            });
+                          }
+                          
                         });
                       }
-                    },
-                    error: (error) => {
-                      console.error('Error al actualizar la asistencia:', error);
-                      if (error.status !== 200) {
-                        console.log("Error details:", error.message);
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'Ocurrió un problema al actualizar la asistencia. Intente nuevamente.'
-                        });
-                      }
+                    } else {
+
+                      console.log("como devolvio vacio es por que no tiene ni ingreso ni salida ")
+
+                      const nuevaAsistencia: Asistencia = {
+                        empleado: { id: this.empleadoIdSeleccionado },
+                        estado: EstadoAsistencia.PENDIENTE
+                      };
+
+                      this.tomaasistenciaService.registrarAsistencia(nuevaAsistencia).subscribe({
+
+                        next: (res) => {
+
+                            const now = new Date();
+                            const fecha = now.toLocaleDateString();
+                            const hora = now.toLocaleTimeString();
+
+                            swall.fire({
+                              icon: 'success',
+                              title: 'Asistencia registrada',
+                              html: `
+                                <div style="text-align: left;">
+                                  <p><strong>${this.empleadoSeleccionado}</strong>, se ha registrado su horario de ingreso.</p>
+                                  <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Fecha: <strong>${fecha}</strong></li>
+                                    <li>Hora de ingreso: <strong>${hora}</strong></li>
+                                  </ul>
+                                </div>
+                              `
+                            }).then(() => {
+                              this.limpiarCampos();
+                              this.startCamera();
+                            });
+                        },
+                        error: (error) => {
+                          console.error('Error al registrar la asistencia:', error);
+                          this.startCamera();
+                        }
+                      });
                     }
-                    
-                  });
+                },
+                error: (error) => {
+                  console.error('Error al verificar la asistencia:', error);
+                  this.startCamera();
                 }
-              } else {
-                const nuevaAsistencia: Asistencia = {
-                  empleado: { id: this.empleadoIdSeleccionado },
-                  estado: EstadoAsistencia.PENDIENTE
-                };
-
-                this.tomaasistenciaService.registrarAsistencia(nuevaAsistencia).subscribe({
-                  next: (res) => {
-                    const now = new Date();
-                    const fecha = now.toLocaleDateString();
-                    const hora = now.toLocaleTimeString();
-
-                    swall.fire({
-                      icon: 'success',
-                      title: 'Asistencia registrada',
-                      html: `
-                        <div style="text-align: left;">
-                          <p><strong>${this.empleadoSeleccionado}</strong>, se ha registrado su horario de ingreso.</p>
-                          <ul style="margin: 0; padding-left: 20px;">
-                            <li>Fecha: <strong>${fecha}</strong></li>
-                            <li>Hora de ingreso: <strong>${hora}</strong></li>
-                          </ul>
-                        </div>
-                      `
-                    }).then(() => {
-                      this.limpiarCampos();
-                    });
-                  },
-                  error: (error) => {
-                    console.error('Error al registrar la asistencia:', error);
-                  }
-                });
-              }
-            },
-            error: (error) => {
-              console.error('Error al verificar la asistencia:', error);
-            }
-          });
+            });
         }
 
-        this.action.start();
-        this.isProcessing = false;
+        //this.action.start();
+        //this.isProcessing = false;
       },
       error: (error) => {
         if (!this.showError) {
-          this.showError = true;
           Swal.fire({
             icon: 'error',
             title: 'Empleado no registrado',
             text: 'El empleado con el QR proporcionado no está registrado.'
+          }).then(() => {
+            // Reiniciar la cámara después de mostrar el mensaje
+            this.startCamera();
           });
         }
 
-        this.action.start();
-        this.isProcessing = false;
+        //this.action.start();
+        //this.isProcessing = false;
       }
     });
   }
+
+
+  
+  
+
 
   limpiarCampos() {
     this.tomarasistenciaForm.patchValue({

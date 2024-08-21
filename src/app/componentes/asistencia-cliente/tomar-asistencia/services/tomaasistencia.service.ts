@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap, throwError, timeout } from 'rxjs';
 import { Asistencia } from 'src/app/componentes/dashboard/asistencias/model/asistencia';
 import { AsistenciaDTO } from 'src/app/componentes/dashboard/asistencias/model/asistencia-dto.model';
 import baseUrl from 'src/app/helpers';
@@ -20,9 +20,23 @@ export class TomarAsistenciaService {
     return this.http.get<any>(`${baseUrl}/api/asistencia?page=${page}&size=${size}`);
   }
 
-  registrarAsistencia(asistencia: Asistencia): Observable<Asistencia> {
-    return this.http.post<Asistencia>(`${baseUrl}/api/asistencia/registrar`, asistencia, { headers: this.httpHeaders });
+  registrarAsistencia(asistencia: Asistencia): Observable<{ status: string; message: string }> {
+    return this.http.post<{ status: string; message: string }>(`${baseUrl}/api/asistencia/registrar`, asistencia, { headers: this.httpHeaders }).pipe(
+      tap((response) => {
+        console.log('Respuesta de registrarAsistencia:', response);
+        console.log('Status:', response.status);
+        console.log('Message:', response.message);
+      }),
+      catchError((error) => {
+        console.error('Error en registrarAsistencia:', error);
+        return throwError(() => error);
+      })
+    );
   }
+  
+  
+  
+  
 
   verificarAsistencia(empleadoId: number, fecha: string): Observable<AsistenciaDTO> {
     const params = new HttpParams()
